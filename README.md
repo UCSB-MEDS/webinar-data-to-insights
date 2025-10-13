@@ -1,2 +1,3 @@
-# webinar-data-to-insights
-some example code for the MEDS webinar, From Data to Insights
+# From Data to Insights Webinar
+
+Demo code for the October 16, 2025 webinar.
