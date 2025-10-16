@@ -1,0 +1,71 @@
+---
+title: "From Data to Insights"
+---
+
+Data source: https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.2030.6
+
+# Import libraries
+
+```{r}
+library(tidyverse)
+```
+
+# Import raw data
+
+```{r}
+temp_raw <- read_csv(here::here("island_ocean_temps.csv"))
+```
+
+# Basic data exploration
+
+```{r}
+summary(temp_raw)
+unique(temp_raw$site)
+```
+
+# Initial processing for Scorpion
+
+```{r}
+sci <- temp_raw |>
+  filter(site == "SCP") |> 
+  filter(depth_m == 14) |> 
+  mutate(
+    datetime = datetime_gmt,                
+    date = as_date(datetime_gmt),
+    time = format(datetime_gmt, format = "%H:%M:%S")) |> 
+  mutate(
+    year = year(date),
+    month = month(date),
+    day = day(date),
+    doy = yday(date)
+  ) |> 
+  select(site, year, month, day, time, doy, temp_c = temperature_c) |> 
+  filter(year > 2014)
+
+# save wrangled version for webinar example
+write_csv(sci, here::here("sci_temps.csv"))
+    
+```
+
+# Pre-viz summary
+
+```{r}
+temp_by_day_sci <- sci |> 
+  group_by(year, doy) |> 
+  summarize(mean_temp = mean(temp_c)) 
+```
+
+# Build viz
+
+```{r}
+ggplot(temp_by_day_sci, aes(x = doy, y = mean_temp, group = year)) +
+  geom_line(alpha = 0.75, linewidth = 0.75) +
+  gghighlight::gghighlight(year == 2015) +
+  labs(
+    x = "Day of Year",
+    y = "Temperature (°C)",
+    color = "Year"
+  ) +
+  theme_minimal()
+```
+
