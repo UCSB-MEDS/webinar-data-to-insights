@@ -12,7 +12,7 @@ temp_summary <- temp_data |>
 # plot data ---
 ggplot(temp_by_day_sci, aes(x = doy, y = mean_temp, group = year)) + 
   geom_line(alpha = 0.75, linewidth = 0.75) +
-  gghighlight::gghighlight(temp_c > 22)
+  gghighlight::gghighlight(year == 2015)
   #gghighlight::gghighlight(year == 2015) #+
   # labs(
   #   x = "Day of Year",
