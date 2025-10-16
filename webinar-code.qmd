@@ -13,7 +13,7 @@ library(tidyverse)
 # Import raw data
 
 ```{r}
-temp_raw <- read_csv(here::here("island_ocean_temps.csv"))
+temp_raw <- read_csv(here::here("data", "island_ocean_temps.csv"))
 ```
 
 # Basic data exploration
@@ -39,11 +39,11 @@ sci <- temp_raw |>
     day = day(date),
     doy = yday(date)
   ) |> 
-  select(site, year, month, day, time, doy, temp_c = temperature_c) |> 
-  filter(year > 2014)
-
+  filter(year > 2014) |> 
+  select(site, date, time, year, doy, temp_c = temperature_c) 
+  
 # save wrangled version for webinar example
-write_csv(sci, here::here("sci_temps.csv"))
+write_csv(sci, here::here("data", "sci_temps.csv"))
     
 ```
 
@@ -60,7 +60,7 @@ temp_by_day_sci <- sci |>
 ```{r}
 ggplot(temp_by_day_sci, aes(x = doy, y = mean_temp, group = year)) +
   geom_line(alpha = 0.75, linewidth = 0.75) +
-  gghighlight::gghighlight(year == 2015) +
+  gghighlight::gghighlight(year == 2015) #+
   labs(
     x = "Day of Year",
     y = "Temperature (°C)",
