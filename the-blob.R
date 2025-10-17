@@ -7,13 +7,23 @@ temp_data <- read_csv(here::here("data", "sci_temps.csv"))
 # calculate mean temp by day ----
 temp_summary <- temp_data |> 
   group_by(date, doy) |> 
-  summarize(mean_temp = mean(temp_c)) 
+  summarize(mean_temp = mean(temp_c)) |> 
+  ungroup() |> 
+  mutate(year = year(date))
 
 # plot data ---
-ggplot(temp_by_day_sci, aes(x = doy, y = mean_temp, group = year)) + 
+ggplot(temp_summary, aes(x = doy, y = mean_temp, group = year)) + 
   geom_line(alpha = 0.75, linewidth = 0.75) +
   gghighlight::gghighlight(year == 2015)
-  #gghighlight::gghighlight(year == 2015) #+
+  
+
+
+
+
+
+
+
+#gghighlight::gghighlight(year == 2015) #+
   # labs(
   #   x = "Day of Year",
   #   y = "Temperature (°C)"
